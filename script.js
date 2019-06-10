@@ -65,48 +65,109 @@ var course =
 
     };
 
+var i = 0,
+    score,
+    arrHTML;
 
-
-
-function answer(id) {
-
-    let myDiv = document.getElementById(id);
-
-    lab = document.createElement('label');
-    lab.innerHTML = `<input type="radio" name="myname" value="0">Гоша`;
-    myDiv.insertAdjacentElement("beforeend", lab);
-    myDiv.insertAdjacentHTML("beforeend", `</br>`);
-}
-
-function theme(id) {
-
+function test() {
+    var valueId = 0;
     for (key in course) {
 
-        let div = document.createElement('div');
+            let div = document.createElement('div'),
+            myForm = document.getElementById('form');
 
-        div.id = id;
-        div.innerHTML = `<h2>${(course[key].theme)}</h2></br>`;
-        document.body.appendChild(div);
+
+        div.id = "id_" + i;
+        div.insertAdjacentHTML("beforeend", `<h2>${(course[key].theme)}</h2></br>`);
+
+        for (arrQuest = 0; arrQuest < course[key].quests.length; arrQuest++) {
+
+            div.insertAdjacentHTML("beforeend", `<h4>${(course[key].quests[arrQuest].quest)}</h4>`);
+            myForm.insertAdjacentElement("beforeend", div);
+
+
+            if (Array.isArray(course[key].quests[arrQuest].rightAnswer)) {
+
+                let myDiv = document.getElementById("id_" + i);
+
+                point('checkbox', 'checks' + valueId, arrQuest, myDiv);
+                for (htmlarr of arrHTML.sort(arrRandom)) {
+                    myDiv.insertAdjacentElement("beforeend", htmlarr);
+                    myDiv.insertAdjacentHTML("beforeend", `</br>`);
+                }
+
+            } else {
+
+                let myDiv = document.getElementById("id_" + i);
+                point('radio', 'myname' + valueId, arrQuest, myDiv);
+
+                for (htmlarr of arrHTML.sort(arrRandom)) {
+                    myDiv.insertAdjacentElement("beforeend", htmlarr);
+                    myDiv.insertAdjacentHTML("beforeend", `</br>`);
+                }
+            }
+            valueId++
+        }
+        i++;
+    }
 }
+
+function point (type, myName, arrQuest) {
+
+    arrHTML = [];
+
+    if (course[key].quests[arrQuest].rightAnswer) {
+
+        score = 1;
+
+        for (let i = 0; i < course[key].quests[arrQuest].rightAnswer.length; i++) {
+            lab = document.createElement('label');
+            lab.innerHTML = `<input type=${type} name=${myName} value=${score}>${((course[key].quests[arrQuest].rightAnswer[i]))}`;
+            arrHTML.push(lab);
+        }
+    }
+
+        score = 0;
+
+        for (let i = 0; i < course[key].quests[arrQuest].wrongAnswer.length; i++) {
+            lab = document.createElement('label');
+            lab.innerHTML = `<input type=${type} name=${myName} value=${score}>${((course[key].quests[arrQuest].wrongAnswer[i]))}`;
+            arrHTML.push(lab);
+        }
 }
 
-theme(123);
+function arrRandom() {
+    return Math.random() - 0.5;
+};
 
-for (key in course) {
-    console.log(course[key])
+
+test();
+
+function calc () {
+
+    var result = 0,
+        allChecked = 0,
+        allTag = document.getElementsByTagName('input');
+
+    for (let i = 0; i < allTag.length; i++) {
+
+        var checks = document.getElementsByName('checks' + i);
+
+        if (checks.length > 0) {
+            allChecked = 0;
+            for (let i = 0; i < checks.length; i++) {
+                if (checks[i].checked == true) {
+            allChecked++
+        }
+    }
 }
+        if (allTag[i].checked)
+            if (allChecked <= 2)
+        result += +allTag[i].value;
+    }
+alert(`Вы дали правильных ответов ${result}`);
+};
 
+var checks = document.getElementsByName('checks' + i);
 
-//course.themeMultiple.quests[2].rightAnswer
-
-    // calc.onclick = function(){
-//     let myForm = this.form,
-//         chbx = myForm['precipitation'],
-//         chbxSum = 0;
-//     for(var i = 0; i < chbx.length; i++){
-//         if(chbx[i].checked) {
-//             chbxSum += +chbx[i].value;
-//         }
-//     }
-//     myForm.result.value = +myForm.myname.value + +myForm.street.value + chbxSum;
-// }
+console.log(checks);
