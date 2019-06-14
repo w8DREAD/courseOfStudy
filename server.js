@@ -12,7 +12,7 @@ http.createServer(function(request, response){
     
     Firing -- ${JSON.stringify(director.firing.length)}
     
-    FiringList -- ${JSON.stringify(director.firing)}
+    FiringList -- ${JSON.stringify(director.status)}
     
 
     

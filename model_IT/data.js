@@ -15,6 +15,7 @@ class Director {
         this.hiring = [];
         this.firing = [];
         this.company = company;
+        this.status = [];
 
     }
 
@@ -28,16 +29,16 @@ class Director {
 
                 arrProcess.forEach( (cur, ind) => {
 
-                    if(cur.daysInWork >= cur.difficulty) {
+                    // if(cur.daysInWork >= cur.difficulty) {
 
-                        cur.workers.forEach((c) => {
-
-                            c.completeProjects.push(cur.name);
-                            c.withoutWorks = 0;
-                            this.company[group].workers.push(c);
-
-                        });
-                        cur.workers = [];
+                    //     cur.workers.forEach((c) => {
+                    //
+                    //         // c.completeProjects.push(cur.name);
+                    //         // c.withoutWorks = 0;
+                            this.status.push(cur);
+                    //
+                    //     });
+                    //     cur.workers = [];
                         if (group != 'QA') {
                             this.storageWaiting.QA.push(cur);
 
@@ -46,7 +47,7 @@ class Director {
 
                         }
                         this.company[group].projectInProcess.splice(arrProcess.indexOf(ind), 1)
-                    }
+                    // }
 
                 });
 
@@ -210,7 +211,7 @@ class Company {
                 let arrProject = this[group].storageProject.slice();
                 let arrWorkers = this[group].workers.slice();
 
-                arrProject.forEach( (cur, ind) => {
+                arrProject.forEach((cur, ind) => {
                     cur.workers.push(arrWorkers[ind]);
                     this[group].projectInProcess.push(cur);
                     this[group].storageProject.splice(arrProject.indexOf(ind), 1);
@@ -218,31 +219,29 @@ class Company {
 
                 });
 
-            }
+                let arrProcess = this[group].projectInProcess;
 
-            if (group == 'mobile') {
-                if (this[group].workers.length > 0 && this[group].storageProject.length == 0) {
+                arrProcess.forEach((cur, ind) => {
 
-                        let arrProcess = this[group].projectInProcess;
-                        let arrWorkers = this[group].workers.slice();
+                    if (group == 'mobile') {
+                        if (this[group].workers.length > 0 && this[group].storageProject.length == 0) {
 
-                    arrProcess.forEach( (cur, ind) => {
+
+                            let arrWorkers = this[group].workers.slice();
 
                             while (cur.workers.length < 3) {
-                                if(this[group].workers.length > 0) {
+                                if (this[group].workers.length > 0) {
                                     cur.workers.push(arrWorkers[ind]);
                                     this[group].workers.splice(arrWorkers.indexOf(ind), 1)
                                 } else {
                                     break
                                 }
                             }
-                    });
-
-                }
+                        }
+                    }
+                });
             }
         }
-
-
     }
 }
 class Project {
@@ -302,16 +301,14 @@ function test (n) {
         evil.getProject();
         evil.hiringWorker();
         evil.giveProject();
-
-        evil.firingWorker();
-        evil.checkProject();
-
         evil.company.startedWork();
+        evil.checkProject();
+        evil.firingWorker();
         i++
     }
 
 }
 
-test(15);
+test(10);
 
 module.exports = evil;
