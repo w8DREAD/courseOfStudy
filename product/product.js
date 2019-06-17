@@ -161,4 +161,3 @@ function createTable(arg) {
 };
 
 createTable(50);
-console.log(factory);

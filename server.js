@@ -12,7 +12,7 @@ http.createServer(function(request, response){
     
     Firing -- ${JSON.stringify(director.firing.length)}
     
-    FiringList -- ${JSON.stringify(director.status)}
+    FiringList -- ${JSON.stringify(director.firing)}
     
 
     
@@ -26,7 +26,9 @@ http.createServer(function(request, response){
     
     Process.Mobile.list -- ${JSON.stringify(director.company.mobile.projectInProcess)}
     
-    Process.QA.list -- ${JSON.stringify(director.company.QA.projectInProcess)}`);
+    Process.QA.list -- ${JSON.stringify(director.company.QA.projectInProcess)}
+    
+    Hiring.list -- ${JSON.stringify(director.hiring)}`);
 
 
 }).listen(3000);
