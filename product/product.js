@@ -18,11 +18,13 @@ class Product {
 
 class  Producer {
 
-    constructor(name) {
+    constructor(name, min = 50, max = 150) {
         this.name = name;
         this.produced = [];
         this.storage = [];
         this.product = [];
+        this.minСapacity = min;
+        this.maxCapacity = max;
     }
 
     generateProduct(name = randName, price = randPrice, n = 1) {
@@ -35,29 +37,27 @@ class  Producer {
         }
     }
 
-    createProducts(min = 50, max = 150) {
-        return this.produced.push(randomRange(min, max))
+    createProducts() {
+        return this.produced.push(randomRange(this.minСapacity, this.maxCapacity))
 
     }
 
     sumLast3days(n = undefined) {
-        let arr = this.produced.slice(0, n);
-        let result = arr.reverse().slice(0, 3);
-        return  result.reduce(function(sum, current) {
-            return sum + current;
-        }, 0);
+       return sum(this.produced, n);
     };
 }
 
 class User {
 
-    constructor (name) {
+    constructor (name, min = 70, max = 120) {
         this.name = name;
         this.storage = [];
         this.need = [];
+        this.minСapacity = min;
+        this.maxCapacity = max;
     }
-    createNeeds (min = 70, max = 120) {
-        return this.need.push(randomRange(min, max))
+    createNeeds () {
+        return this.need.push(randomRange(this.minСapacity, this.maxCapacity))
     }
 }
 
@@ -71,45 +71,42 @@ class Agent {
     delivery(from, where, arr) {
 
         var temp = from.produced[arr];
-        switch (true) {
-            case temp >= this.capacity && this.capacity <= where.need[arr]: {
-                this.deliveryForUsers.push(this.capacity);
-                where.storage.push(this.deliveryForUsers[arr]);
-                from.storage.push(temp - this.deliveryForUsers[arr]);
-                break;
+        if (from.storage.length != 0) {
+            temp = from.produced[arr] + from.storage[arr - 1];
+        }
+                if (temp >= this.capacity && this.capacity <= where.need[arr]) {
+
+                    this.deliveryForUsers.push(this.capacity);
+                    where.storage.push(this.deliveryForUsers[arr]);
+                    from.storage.push(temp - this.deliveryForUsers[arr]);
             }
-            case temp >= this.capacity && this.capacity > where.need[arr]: {
-                this.deliveryForUsers.push(where.need[arr]);
-                where.storage.push(this.deliveryForUsers[arr]);
-                from.storage.push(temp - this.deliveryForUsers[arr]);
-                break;
+                if (temp >= this.capacity && this.capacity > where.need[arr]) {
+
+                    this.deliveryForUsers.push(where.need[arr]);
+                    where.storage.push(this.deliveryForUsers[arr]);
+                    from.storage.push(temp - this.deliveryForUsers[arr]);
             }
-            case temp < this.capacity && temp >= where.need[arr]: {
-                this.deliveryForUsers.push(where.need[arr]);
-                where.storage.push(this.deliveryForUsers[arr]);
-                from.storage.push(temp - this.deliveryForUsers[arr]);
-                break;
+                if (temp < this.capacity && temp >= where.need[arr]) {
+
+                    this.deliveryForUsers.push(where.need[arr]);
+                    where.storage.push(this.deliveryForUsers[arr]);
+                    from.storage.push(temp - this.deliveryForUsers[arr]);
             }
-            case temp < this.capacity && temp < where.need[arr]: {
-                this.deliveryForUsers.push(temp);
-                where.storage.push(this.deliveryForUsers[arr]);
-                from.storage.push(temp - this.deliveryForUsers[arr]);
-                break;
+                if (temp < this.capacity && temp < where.need[arr]) {
+
+                    this.deliveryForUsers.push(temp);
+                    where.storage.push(this.deliveryForUsers[arr]);
+                    from.storage.push(temp - this.deliveryForUsers[arr]);
             }
         }
-    }
 
     sumLast3days(n = undefined) {
-        let arr = this.deliveryForUsers.slice(0, n);
-        let result = arr.reverse().slice(0, 3);
-        return  result.reduce(function(sum, current) {
-            return sum + current;
-        }, 0);
+        return sum(this.deliveryForUsers, n);
     };
 
 };
 
-var factory = new Producer('Maksim'),
+var factory = new Producer('Bolshivichka'),
     user = new User('People'),
     agent = new Agent('Smith');
 
@@ -124,19 +121,22 @@ function randomProduct(arg) {
 }
 
 function workingDay(days = 1) {
+    factory.createProducts();
+    user.createNeeds();
+    agent.delivery(factory, user, count);
     if (days != 1) {
-        factory.createProducts();
-        user.createNeeds();
-        agent.delivery(factory, user, count);
         count++;
         workingDay(days - 1)
-    } else {
-        factory.createProducts();
-        user.createNeeds();
-        agent.delivery(factory, user, count);
     }
 }
 
+function sum (report, n) {
+    let arr = report.slice(0, n + 1);
+    let result = arr.reverse().slice(0, 3);
+    return  result.reduce(function(sum, current) {
+        return sum + current;
+    }, 0);
+}
 
 function createTable(arg) {
 
@@ -160,4 +160,4 @@ function createTable(arg) {
     }
 };
 
-createTable(10);
+createTable(50);
