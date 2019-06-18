@@ -68,6 +68,14 @@ Producer.prototype.generateProduct = function (name = randName, price = randPric
   }
 }
 
+Producer.prototype.createProducts = function () {
+  return this.produced.push(randomRange(this.minСapacity, this.maxCapacity))
+}
+
+Producer.prototype.sumLast3days = function (n = undefined) {
+  return sum(this.produced, n)
+}
+
 // class User {
 //   constructor (name, min = 70, max = 120) {
 //     this.name = name
