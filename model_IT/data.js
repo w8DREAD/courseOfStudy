@@ -126,14 +126,17 @@ class Director {
       }
       i++
     }
-    if (inDay.web[0] != undefined) {
-      this.storageWaiting.web.unshift(inDay.web[0])
+    if (inDay.web[0]) {
+      inDay.web.forEach((curProject) => {
+        this.storageWaiting.web.unshift(curProject)
+      })
     }
-    if (inDay.mobile[0] != undefined) {
-      this.storageWaiting.mobile.unshift(inDay.mobile[0])
+    if (inDay.mobile[0]) {
+      inDay.web.forEach((curProject) => {
+        this.storageWaiting.web.unshift(curProject)
+      })
     }
   }
-
   giveProject () {
     for (let group of Object.keys(this.company)) {
       if (this.storageWaiting.hasOwnProperty(group)) {
@@ -174,7 +177,7 @@ class Company {
         arrProject.forEach((curProj) => {
           arrWorkers = this[group].workers.slice()
 
-          if (arrWorkers.length > 0) {
+          if (arrWorkers.length) {
             curProj.workers.push(arrWorkers[0])
             this[group].projectInProcess.push(curProj)
             remEl(curProj.name, this[group].storageProject, 'name')
