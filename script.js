@@ -1,173 +1,163 @@
 var course =
     {
-        themePlus:
+      themePlus:
             {
-                theme: 'Сложение',
-                quests:
+              theme: 'Сложение',
+              quests:
                     [{
-                    quest: 'Сколько 2 + 2?',
-                    rightAnswer: '4',
-                    wrongAnswer: ['1', '2', '3']
+                      quest: 'Сколько 2 + 2?',
+                      rightAnswer: '4',
+                      wrongAnswer: ['1', '2', '3']
                     },
                     {
-                    quest: 'Сколько 2 + 1?',
-                    rightAnswer: '3',
-                    wrongAnswer: ['1', '2', '4']
+                      quest: 'Сколько 2 + 1?',
+                      rightAnswer: '3',
+                      wrongAnswer: ['1', '2', '4']
                     },
                     {
-                    quest: 'Сколько 1 + 1?',
-                    rightAnswer: '2',
-                    wrongAnswer: ['4', '1', '3']
-                    }],
+                      quest: 'Сколько 1 + 1?',
+                      rightAnswer: '2',
+                      wrongAnswer: ['4', '1', '3']
+                    }]
             },
 
-        themeMinus:
+      themeMinus:
             {
-                theme: 'Вычитание',
-                quests:
+              theme: 'Вычитание',
+              quests:
                     [{
-                    quest: 'Сколько 6 - 2?',
-                    rightAnswer: '4',
-                    wrongAnswer: ['1', '2', '3']
+                      quest: 'Сколько 6 - 2?',
+                      rightAnswer: '4',
+                      wrongAnswer: ['1', '2', '3']
                     },
                     {
-                    quest: 'Сколько 2 - 1?',
-                    rightAnswer: '1',
-                    wrongAnswer: ['4', '2', '3']
+                      quest: 'Сколько 2 - 1?',
+                      rightAnswer: '1',
+                      wrongAnswer: ['4', '2', '3']
                     },
                     {
-                    quest: 'Сколько 2 - 2?',
-                    rightAnswer: '0',
-                    wrongAnswer: ['4', '2', '3']
-                    }],
+                      quest: 'Сколько 2 - 2?',
+                      rightAnswer: '0',
+                      wrongAnswer: ['4', '2', '3']
+                    }]
             },
 
-        themeMultiple:
+      themeMultiple:
             {
-                theme: 'Умножение',
-                quests:
+              theme: 'Умножение',
+              quests:
                     [{
-                    quest: 'Сколько 2 * 2?',
-                    rightAnswer: '4',
-                    wrongAnswer: ['1', '2', '3']
+                      quest: 'Сколько 2 * 2?',
+                      rightAnswer: '4',
+                      wrongAnswer: ['1', '2', '3']
                     },
                     {
-                    quest: 'Сколько 1 * 1?',
-                    rightAnswer: '1',
-                    wrongAnswer: ['4', '2', '3']
+                      quest: 'Сколько 1 * 1?',
+                      rightAnswer: '1',
+                      wrongAnswer: ['4', '2', '3']
                     },
                     {
-                    quest: 'Сколько 2 * 0?',
-                    rightAnswer: ['0', '1'],
-                    wrongAnswer: ['4', '2', '3']
-                    }],
+                      quest: 'Сколько 2 * 0?',
+                      rightAnswer: ['0', '1'],
+                      wrongAnswer: ['4', '2', '3']
+                    }]
             }
 
-    };
-
-var i = 0,
-    score,
-    arrHTML;
-
-function test() {
-    var valueId = 0;
-    for (key in course) {
-
-            let div = document.createElement('div'),
-            myForm = document.getElementById('form');
-
-
-        div.id = "id_" + i;
-        div.insertAdjacentHTML("beforeend", `<h2>${(course[key].theme)}</h2></br>`);
-
-        for (arrQuest = 0; arrQuest < course[key].quests.length; arrQuest++) {
-
-            div.insertAdjacentHTML("beforeend", `<h4>${(course[key].quests[arrQuest].quest)}</h4>`);
-            myForm.insertAdjacentElement("beforeend", div);
-
-
-            if (Array.isArray(course[key].quests[arrQuest].rightAnswer)) {
-
-                let myDiv = document.getElementById("id_" + i);
-
-                point('checkbox', 'checks' + valueId, arrQuest, myDiv);
-                for (htmlarr of arrHTML.sort(arrRandom)) {
-                    myDiv.insertAdjacentElement("beforeend", htmlarr);
-                    myDiv.insertAdjacentHTML("beforeend", `</br>`);
-                }
-
-            } else {
-
-                let myDiv = document.getElementById("id_" + i);
-                point('radio', 'myname' + valueId, arrQuest, myDiv);
-
-                for (htmlarr of arrHTML.sort(arrRandom)) {
-                    myDiv.insertAdjacentElement("beforeend", htmlarr);
-                    myDiv.insertAdjacentHTML("beforeend", `</br>`);
-                }
-            }
-            valueId++
-        }
-        i++;
     }
+
+var i = 0
+var score
+var arrHTML
+
+function test () {
+  var valueId = 0
+  for (key in course) {
+    let div = document.createElement('div')
+    let myForm = document.getElementById('form')
+
+    div.id = 'id_' + i
+    div.insertAdjacentHTML('beforeend', `<h2>${(course[key].theme)}</h2></br>`)
+
+    for (arrQuest = 0; arrQuest < course[key].quests.length; arrQuest++) {
+      div.insertAdjacentHTML('beforeend', `<h4>${(course[key].quests[arrQuest].quest)}</h4>`)
+      myForm.insertAdjacentElement('beforeend', div)
+
+      if (Array.isArray(course[key].quests[arrQuest].rightAnswer)) {
+        let myDiv = document.getElementById('id_' + i)
+
+        point('checkbox', 'checks' + valueId, arrQuest, myDiv)
+        for (htmlarr of arrHTML.sort(arrRandom)) {
+          myDiv.insertAdjacentElement('beforeend', htmlarr)
+          myDiv.insertAdjacentHTML('beforeend', `</br>`)
+        }
+      } else {
+        let myDiv = document.getElementById('id_' + i)
+        point('radio', 'myname' + valueId, arrQuest, myDiv)
+
+        for (htmlarr of arrHTML.sort(arrRandom)) {
+          myDiv.insertAdjacentElement('beforeend', htmlarr)
+          myDiv.insertAdjacentHTML('beforeend', `</br>`)
+        }
+      }
+      valueId++
+    }
+    i++
+  }
 }
 
 function point (type, myName, arrQuest) {
+  arrHTML = []
 
-    arrHTML = [];
+  if (course[key].quests[arrQuest].rightAnswer) {
+    score = 1
 
-    if (course[key].quests[arrQuest].rightAnswer) {
-
-        score = 1;
-
-        for (let i = 0; i < course[key].quests[arrQuest].rightAnswer.length; i++) {
-            lab = document.createElement('label');
-            lab.innerHTML = `<input type=${type} name=${myName} value=${score}>${((course[key].quests[arrQuest].rightAnswer[i]))}`;
-            arrHTML.push(lab);
-        }
+    for (let i = 0; i < course[key].quests[arrQuest].rightAnswer.length; i++) {
+      lab = document.createElement('label')
+      lab.innerHTML = `<input type=${type} name=${myName} value=${score}>${((course[key].quests[arrQuest].rightAnswer[i]))}`
+      arrHTML.push(lab)
     }
+  }
 
-        score = 0;
+  score = 0
 
-        for (let i = 0; i < course[key].quests[arrQuest].wrongAnswer.length; i++) {
-            lab = document.createElement('label');
-            lab.innerHTML = `<input type=${type} name=${myName} value=${score}>${((course[key].quests[arrQuest].wrongAnswer[i]))}`;
-            arrHTML.push(lab);
-        }
+  for (let i = 0; i < course[key].quests[arrQuest].wrongAnswer.length; i++) {
+    lab = document.createElement('label')
+    lab.innerHTML = `<input type=${type} name=${myName} value=${score}>${((course[key].quests[arrQuest].wrongAnswer[i]))}`
+    arrHTML.push(lab)
+  }
 }
 
-function arrRandom() {
-    return Math.random() - 0.5;
+function arrRandom () {
+  return Math.random() - 0.5
 };
 
-
-test();
+test()
 
 function calc () {
+  var result = 0
+  var allChecked = 0
+  var allTag = document.getElementsByTagName('input')
 
-    var result = 0,
-        allChecked = 0,
-        allTag = document.getElementsByTagName('input');
+  for (let i = 0; i < allTag.length; i++) {
+    var checks = document.getElementsByName('checks' + i)
 
-    for (let i = 0; i < allTag.length; i++) {
-
-        var checks = document.getElementsByName('checks' + i);
-
-        if (checks.length > 0) {
-            allChecked = 0;
-            for (let i = 0; i < checks.length; i++) {
-                if (checks[i].checked == true) {
-            allChecked++
+    if (checks.length > 0) {
+      allChecked = 0
+      for (let i = 0; i < checks.length; i++) {
+        if (checks[i].checked == true) {
+          allChecked++
         }
+      }
     }
-}
-        if (allTag[i].checked)
-            if (allChecked <= 2)
-        result += +allTag[i].value;
+    if (allTag[i].checked) {
+      if (allChecked <= 2) { result += +allTag[i].value }
     }
-alert(`Вы дали правильных ответов ${result}`);
+  }
+  alert(`Вы дали правильных ответов ${result}`)
 };
 
-var checks = document.getElementsByName('checks' + i);
+var checks = document.getElementsByName('checks' + i)
 
-console.log(checks);
+module.exports = test;
+
+console.log(checks)

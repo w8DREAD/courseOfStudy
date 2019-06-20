@@ -1,20 +1,24 @@
 {
   "name": "courseofstudy",
   "version": "1.0.0",
-  "main": "script.js",
+  "main": "server.js",
   "directories": {
     "test": "test"
   },
   "scripts": {
-    "test": "mocha 'test.js' ",
-    "start": "nodemon server.js"
+    "test": "mocha 'Async/test.js' ",
+    "start": "nodemon server.js",
+    "build": "mustache dataView.json myTemplate.mustache > public/output.html"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "chai": "^4.2.0",
+    "express": "^4.17.1",
+    "fs": "0.0.1-security",
     "http": "0.0.0",
     "mocha": "^6.1.4",
+    "mustache": "^3.0.1",
     "nodemon": "^1.19.1",
     "require": "^2.4.20"
   },
