@@ -1,7 +1,7 @@
 {
   themePlus:
   {
-    theme: 'Сложение',
+    theme: "Сложение",
     quests:
     [{
       quest: 'Сколько 2 + 2?',
@@ -57,7 +57,7 @@
       },
       {
         quest: 'Сколько 2 * 0?',
-        rightAnswer: ['0', '1'],
+        rightAnswer: '0',
         wrongAnswer: ['4', '2', '3']
       }]
   }

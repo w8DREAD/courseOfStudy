@@ -68,12 +68,14 @@ var course =
 var i = 0
 var score
 var arrHTML
+let myForm = document.getElementById('form')
 
 function test () {
+
   var valueId = 0
   for (key in course) {
     let div = document.createElement('div')
-    let myForm = document.getElementById('form')
+
 
     div.id = 'id_' + i
     div.insertAdjacentHTML('beforeend', `<h2>${(course[key].theme)}</h2></br>`)
@@ -131,8 +133,8 @@ function arrRandom () {
   return Math.random() - 0.5
 };
 
-test()
 
+test()
 function calc () {
   var result = 0
   var allChecked = 0
@@ -153,7 +155,6 @@ function calc () {
       if (allChecked <= 2) { result += +allTag[i].value }
     }
   }
-  alert(`Вы дали правильных ответов ${result}`)
 };
 
 var checks = document.getElementsByName('checks' + i)
