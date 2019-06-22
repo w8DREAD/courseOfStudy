@@ -57,7 +57,7 @@ class Director {
         let projectsGroup = this.company.groups.storageProject.filter((cur) => {
           return cur.status == 'for test'
         }).length
-        while (this.company.groups[groupName]._method == 'test' && this.company.groups[groupName].workers < projectsGroup) {
+        while (this.company.groups[groupName].specialization == 'QA' && this.company.groups[groupName].workers < projectsGroup) {
           let worker = dataFactory('worker', worker_id, this.company.groups[groupName].specialization)
           this.company.groups[groupName].workers.push(worker)
           this.hiring.push(worker)
@@ -84,12 +84,10 @@ class Company {
             this.storageProject.forEach((curProj) => {
               if (this[groupName].workers.length) {
                 let arrWorkers = this[groupName].workers.slice()
-                     if (arrWorkers[0].skill == curProj.spec && curProj.status == 'in waiting') {
-                  curProj.workers.push(arrWorkers[0])
-                  curProj.status = 'in work'
+                if (arrWorkers[0].skill == curProj.spec && curProj.status == 'in waiting') {
+                  curProj.addWorker(arrWorkers[0])
                   remEl(arrWorkers[0].name, this[groupName].workers, 'name')
                 }
-              if (arrWorkers[0].skill == curProj.spec)
               }
             })
 
@@ -106,7 +104,7 @@ class Company {
 
                       workers.forEach((curWorker) => {
                         if (curProj.workers.length < 3) {
-                          curProj.workers.push(curWorker)
+                          curProj.addWorker(curWorker)
                           remEl(curWorker.name, this[groupName].workers, 'name')
                         }
                       })
@@ -116,24 +114,18 @@ class Company {
               }
             }
             if (this[groupName]._method == 'test') {
-              let projectsGroup = this.storageProject.filter((curProj) => {
-                return curProj.status = 'for test'
-              }).length
-
-              if (this[groupName].workers.length && projectsGroup == 0) {
                 this.storageProject.forEach((curProj) => {
                   if (curProj.status == 'for test') {
                     if (this[groupName].workers.length) {
-                      curProj.workers.push(this[groupName].workers[0])
-                      remEl(this[groupName].workers[0].name, this[groupName].workers, 'name')
-                      curProj.daysInWork = 0
+                        curProj.addWorker(this[groupName].workers[0], 'testing')
+                        remEl(this[groupName].workers[0].name, this[groupName].workers, 'name')
+                        curProj.daysInWork = 0
                     }
                   }
                 })
               }
             }
           }
-        }
       },
       checkWork () {
         for (let groupName of Object.keys(this)) {
@@ -144,10 +136,10 @@ class Company {
                   curWorker.finishWork(curProj)
                   this[groupName].workers.push(curWorker)
                 })
-                if (curProj.status != 'test') {
+                if (curProj.status == 'in work') {
                   curProj.status = 'for test'
                   curProj.workers = []
-                } else {
+                } else if (curProj.status == 'testing'){
                   curProj.status = 'complete'
                   curProj.workers = []
                 }
@@ -245,13 +237,19 @@ class Project {
     project_id++
   }
   workDay () {
-    if (this.workers.length && this.status == 'for test') {
+    if (this.workers.length && this.status == 'testing') {
       this.daysInWork = this.difficulty
-    } else if (this.workers.length > 1) {
+    }
+    if (this.workers.length > 1) {
       this.daysInWork += this.workers.length
-    } else if (this.workers.length == 1 && this.status == 'in work') {
+    }
+    if (this.workers.length == 1 && this.status == 'in work') {
       this.daysInWork += 1
     }
+  }
+  addWorker (worker, status = 'in work') {
+    this.workers.push(worker)
+    this.status = status
   }
 }
 
@@ -301,14 +299,29 @@ function test (n) {
   }
 }
 
-test(300)
+test(25)
 
 console.log(evil)
-console.log(evil.company.groups.storageProject.filter((cur) => {
+console.log(`release --- ${JSON.stringify(evil.company.groups.storageProject.filter((cur) => {
   return cur.status == 'complete'
-}))
+}))}`)
 
-console.log(evil.hiring)
-console.log(evil.company.groups['web-dev'].firing)
-console.log(evil.company.groups['mobile-dev'].firing)
-console.log(evil.company.groups['QA'].firing)
+console.log(`Hiring All --- ${JSON.stringify(evil.hiring)}`)
+
+console.log(`In work --- ${JSON.stringify(evil.company.groups.storageProject.filter((cur) => {
+  return cur.status == 'in work'
+}))}`)
+
+console.log(`STORAGE --- ${JSON.stringify(evil.company.groups.storageProject)}`)
+
+console.log(`Web firing --- ${JSON.stringify(evil.company.groups['web-dev'].firing)}`)
+
+console.log(`Mobile firing --- ${JSON.stringify(evil.company.groups['mobile-dev'].firing)}`)
+
+console.log(`QA firing --- ${JSON.stringify(evil.company.groups['QA'].firing)}`)
+
+console.log(`Web workers --- ${JSON.stringify(evil.company.groups['web-dev'].workers)}`)
+
+console.log(`Mobile workers --- ${JSON.stringify(evil.company.groups['mobile-dev'].workers)}`)
+
+console.log(`QA workers --- ${JSON.stringify(evil.company.groups['QA'].workers)}`)
