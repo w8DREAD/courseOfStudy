@@ -5,6 +5,30 @@
     <title>Title</title>
 </head>
 <body>
+<button type="button" onclick="calc()" style="width: 120px; height: 60px; font-size: 20px; margin-top: 20px">Результат</button>
+<script>
+    function calc () {
+        let result = 0
+        let allChecked = 0
+        let allTag = document.getElementsByTagName('input')
 
+        for (let i = 0; i < allTag.length; i++) {
+            let checks = document.getElementsByName('checks' + i)
+
+            if (checks.length > 0) {
+                allChecked = 0
+                for (let i = 0; i < checks.length; i++) {
+                    if (checks[i].checked == true) {
+                        allChecked++
+                    }
+                }
+            }
+            if (allTag[i].checked) {
+                if (allChecked <= 2) { result += +allTag[i].value }
+            }
+        }
+    };
+
+</script>
 </body>
 </html>

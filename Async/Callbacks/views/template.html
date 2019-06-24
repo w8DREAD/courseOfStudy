@@ -1,19 +1,21 @@
 {{#course}}
-<div class="resultItem">
-    <h3 class="theme">{{theme}}</h3>
-    <ul class="quests">
+<div class="Course">
+    <h2 class="theme">{{theme}}</h2>
+    <label class="quests">
         {{#quests}}
-        <li>
-            <ul class="quest">{{quest}}
-                <li>
+            <h4 class="quest">{{quest}}<br>
+                {{#id}}
+                <label>
+                    <input type="radio" name="quest_{{id}}" value="1">
                     {{rightAnswer}}
-                </li>
-                {{#wrongAnswer}}
-                <li>{{wrongAnswer}}</li>
-                {{/wrongAnswer}}
-            </ul>
-        </li>
+                    <br>
+                    {{#wrongAnswer}}
+                <input type="radio" name="quest_{{id}}" value="0"> {{.}}<br>
+                    {{/wrongAnswer}}
+                </label>
+                {{/id}}
+            </h4>
         {{/quests}}
-    </ul>
+    </label>
 </div>
 {{/course}}
