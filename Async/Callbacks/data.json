@@ -1,65 +1,59 @@
 {
-  themePlus:
-  {
-    theme: "Сложение",
-    quests:
+  "course": [{
+    "theme": "Сложение",
+    "quests":
     [{
-      quest: 'Сколько 2 + 2?',
-      rightAnswer: '4',
-      wrongAnswer: ['1', '2', '3']
+      "quest": "Сколько 2 + 2?",
+      "rightAnswer": "4",
+      "wrongAnswer": ["1", "2", "3"]
     },
       {
-        quest: 'Сколько 2 + 1?',
-        rightAnswer: '3',
-        wrongAnswer: ['1', '2', '4']
+        "quest": "Сколько 2 + 1?",
+        "rightAnswer": "3",
+        "wrongAnswer": ["1", "2", "4"]
       },
       {
-        quest: 'Сколько 1 + 1?',
-        rightAnswer: '2',
-        wrongAnswer: ['4', '1', '3']
+        "quest": "Сколько 1 + 1?",
+        "rightAnswer": "2",
+        "wrongAnswer": ["4", "1", "3"]
       }]
   },
-
-  themeMinus:
-  {
-    theme: 'Вычитание',
-    quests:
+    {
+      "theme": "Вычитание",
+    "quests":
     [{
-      quest: 'Сколько 6 - 2?',
-      rightAnswer: '4',
-      wrongAnswer: ['1', '2', '3']
+      "quest": "Сколько 6 - 2?",
+      "rightAnswer": "4",
+      "wrongAnswer": ["1", "2", "3"]
     },
       {
-        quest: 'Сколько 2 - 1?',
-        rightAnswer: '1',
-        wrongAnswer: ['4', '2', '3']
+        "quest": "Сколько 2 - 1?",
+        "rightAnswer": "1",
+        "wrongAnswer": ["4", "2", "3"]
       },
       {
-        quest: 'Сколько 2 - 2?',
-        rightAnswer: '0',
-        wrongAnswer: ['4', '2', '3']
+        "quest": "Сколько 2 - 2?",
+        "rightAnswer": "0",
+        "wrongAnswer": ["4", "2", "3"]
       }]
-  },
-
-  themeMultiple:
-  {
-    theme: 'Умножение',
-    quests:
+    },
+   {
+    "theme": "Умножение",
+    "quests":
     [{
-      quest: 'Сколько 2 * 2?',
-      rightAnswer: '4',
-      wrongAnswer: ['1', '2', '3']
+      "quest": "Сколько 2 * 2?",
+      "rightAnswer": "4",
+      "wrongAnswer": ["1", "2", "3"]
     },
       {
-        quest: 'Сколько 1 * 1?',
-        rightAnswer: '1',
-        wrongAnswer: ['4', '2', '3']
+        "quest": "Сколько 1 * 1?",
+        "rightAnswer": "1",
+        "wrongAnswer": ["4", "2", "3"]
       },
       {
-        quest: 'Сколько 2 * 0?',
-        rightAnswer: '0',
-        wrongAnswer: ['4', '2', '3']
+        "quest": "Сколько 2 * 0?",
+        "rightAnswer": "0",
+        "wrongAnswer": ["4", "2", "3"]
       }]
-  }
-
+   }]
 }
