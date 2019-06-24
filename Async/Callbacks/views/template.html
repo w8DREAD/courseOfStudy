@@ -1,14 +1,19 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Title</title>
-
-</head>
-<body>
-<div type="template">
-{{themePlus.theme}}
-    {{age.qwe}}
+{{#course}}
+<div class="resultItem">
+    <h3 class="theme">{{theme}}</h3>
+    <ul class="quests">
+        {{#quests}}
+        <li>
+            <ul class="quest">{{quest}}
+                <li>
+                    {{rightAnswer}}
+                </li>
+                {{#wrongAnswer}}
+                <li>{{wrongAnswer}}</li>
+                {{/wrongAnswer}}
+            </ul>
+        </li>
+        {{/quests}}
+    </ul>
 </div>
-</body>
-</html>
+{{/course}}

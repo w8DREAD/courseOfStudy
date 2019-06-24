@@ -1,4 +1,4 @@
-var course =
+var data =
     {
       themePlus:
             {
@@ -70,7 +70,7 @@ var score
 var arrHTML
 let myForm = document.getElementById('form')
 
-function test () {
+function test (course) {
 
   var valueId = 0
   for (key in course) {
@@ -87,14 +87,14 @@ function test () {
       if (Array.isArray(course[key].quests[arrQuest].rightAnswer)) {
         let myDiv = document.getElementById('id_' + i)
 
-        point('checkbox', 'checks' + valueId, arrQuest, myDiv)
+        point('checkbox', 'checks' + valueId, arrQuest, data)
         for (htmlarr of arrHTML.sort(arrRandom)) {
           myDiv.insertAdjacentElement('beforeend', htmlarr)
           myDiv.insertAdjacentHTML('beforeend', `</br>`)
         }
       } else {
         let myDiv = document.getElementById('id_' + i)
-        point('radio', 'myname' + valueId, arrQuest, myDiv)
+        point('radio', 'myname' + valueId, arrQuest, data)
 
         for (htmlarr of arrHTML.sort(arrRandom)) {
           myDiv.insertAdjacentElement('beforeend', htmlarr)
@@ -107,7 +107,7 @@ function test () {
   }
 }
 
-function point (type, myName, arrQuest) {
+function point (type, myName, arrQuest, course) {
   arrHTML = []
 
   if (course[key].quests[arrQuest].rightAnswer) {
@@ -134,7 +134,7 @@ function arrRandom () {
 };
 
 
-test()
+test(data)
 function calc () {
   var result = 0
   var allChecked = 0
@@ -159,6 +159,6 @@ function calc () {
 
 var checks = document.getElementsByName('checks' + i)
 
-module.exports = test;
+module.exports = test()
 
 console.log(checks)
