@@ -8,24 +8,50 @@ const app = express()
 app.engine('html', cons.mustache)
 app.set('view engine', 'html')
 
-let qwe = JSON.parse(fs.readFileSync('data.json', 'utf8'))
+let template
+let json
 
-// fs.writeFile('build.html', mustache.render(template, qwe), function (error) {
-//   if (error) throw error // если возникла ошибка
-//   console.log('Асинхронная запись файла завершена. Содержимое файла:')
-//   let data = fs.readFileSync('build.html', 'utf8')
-//   console.log(data) // выводим считанные данные
+function createhtml (dataPath, templatePath, outputPath, callback) {
+
+  fs.readFile(dataPath, 'utf8', (err, data) => {
+    json =  JSON.parse(data)
+  })
+  fs.readFile(templatePath, 'utf8', (err, data) => {
+    template = data
+  })
+  callback(json, template, outputPath)
+  //
+  // let result = mustache.render(template, obj)
+  //
+  // fs.writeFile(outputPath, result, (err) => {
+  //   if (err) {
+  //     return console.log(err)
+  //   }
+  //   console.log('The file was saved!')
+  // })
+}
+// let obj
+// let template
+// fs.readFile('views/template.html', 'utf8', (err, data) => {
+//   template = data
 // })
-
-app.get('/', function (req, res) {
-  res.render('template', qwe)
-})
-// function createhtml (dataPath, templatePath, outputPath, callback) {
-//   let qwe = JSON.parse(fs.readFileSync(dataPath, 'utf8'))
-// app.get('/', function (req, res) {
-//     res.render('templatePath', qwe)
+// fs.readFile('data.json', 'utf8', (err, data) => {
+//   obj = data
 // })
 //
-// }
+// let result = mustache.render(template, obj)
+//
+
+function callback (data, temp, outputPath) {
+  console.log(data)
+  let result = mustache.render(temp, data)
+  fs.writeFile(outputPath, result, (err) => {
+    if (err) {
+      return console.log(err)
+    }
+    console.log('The file was saved!')
+  })
+}
+createhtml('data.json', 'views/template.html', 'build.html', callback)
 
 app.listen(3000)
