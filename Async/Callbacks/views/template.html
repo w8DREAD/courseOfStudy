@@ -1,21 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
 {{#course}}
 <div class="Course">
     <h2 class="theme">{{theme}}</h2>
     <label class="quests">
         {{#quests}}
-            <h4 class="quest">{{quest}}<br>
-                {{#id}}
-                <label>
-                    <input type="radio" name="quest_{{id}}" value="1">
-                    {{rightAnswer}}
-                    <br>
-                    {{#wrongAnswer}}
+        <h4 class="quest">{{quest}}<br>
+            {{#id}}
+            <label>
+                <input type="radio" name="quest_{{id}}" value="1">
+                {{rightAnswer}}
+                <br>
+                {{#wrongAnswer}}
                 <input type="radio" name="quest_{{id}}" value="0"> {{.}}<br>
-                    {{/wrongAnswer}}
-                </label>
-                {{/id}}
-            </h4>
+                {{/wrongAnswer}}
+            </label>
+            {{/id}}
+        </h4>
         {{/quests}}
     </label>
 </div>
 {{/course}}
+
+
+<button type="button" onclick="calc()" style="width: 120px; height: 60px; font-size: 20px; margin-top: 20px">Результат</button>
+<script>
+    function calc () {
+        let result = 0
+        let allChecked = 0
+        let allTag = document.getElementsByTagName('input')
+
+        for (let i = 0; i < allTag.length; i++) {
+            let checks = document.getElementsByName('checks' + i)
+
+            if (checks.length > 0) {
+                allChecked = 0
+                for (let i = 0; i < checks.length; i++) {
+                    if (checks[i].checked == true) {
+                        allChecked++
+                    }
+                }
+            }
+            if (allTag[i].checked) {
+                if (allChecked <= 2) { result += +allTag[i].value }
+            }
+        }
+    };
+
+</script>
+</body>
+</html>
