@@ -75,9 +75,7 @@ function random (min = 0, max = 1) {
 }
 
 class Company {
-  constructor (name = 'Corporation', [groups, spec]) {
-    let group = 1
-
+  constructor (name = 'Corporation', ...groups) {
     this.name = name
     this.groups = {
       storageProject: [],
@@ -160,10 +158,11 @@ class Company {
         })
       }
     }
-    while (group < arguments.length) {
-      this.groups[arguments[group][1]] = dataFactory('group', arguments[group][0], arguments[group][1])
-      group++
-    }
+
+    groups.forEach(([group, spec]) => {
+      this.groups[group] = dataFactory('group', group, spec)
+    })
+
   }
 }
 
@@ -221,12 +220,14 @@ class QA extends Group {
 }
 
 class Worker {
+  static id = 0
+
   constructor (name, skill) {
     this.name = 'Worker_' + name
     this.skill = skill
     this.completeProjects = []
     this.withoutWorks = 0
-    worker_id++
+    Worker.id++
   }
   finishWork (project) {
     this.completeProjects.push(project.name)
