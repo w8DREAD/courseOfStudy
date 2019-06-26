@@ -4,9 +4,17 @@ let EventEmitter = require('events')
 let emitter = new EventEmitter()
 let sinon = require('sinon')
 
-describe('EventEmmitter Hi!', () => {
-  it('Выводит ли обработчик нужное нам сообщение', () => {
+let spy = sinon.spy()
+let event = 'Hi'
 
-    chai.assert()
+emitter.on('test', () => {
+  spy()
+})
+
+describe('EventEmmitter', () => {
+  it('Вызывает ли событие', () => {
+    emitter.emit('test')
+    chai.assert(spy.called)
   })
 })
+
