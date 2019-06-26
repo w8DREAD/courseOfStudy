@@ -5,7 +5,9 @@ let emitter = new EventEmitter()
 let sinon = require('sinon')
 
 let spy = sinon.spy()
-let event = 'Hi'
+let eventHi = 'Hi'
+let eventHow = 'How are you'
+let eventDo = 'What are you doing'
 
 emitter.on('test', () => {
   spy()
@@ -27,3 +29,7 @@ emitter.on('How are you', () => {
 emitter.on('What are you doing', () => {
   console.log('Iam learning javascript')
 })
+
+emitter.emit(eventHi)
+emitter.emit(eventHow)
+emitter.emit(eventDo)
