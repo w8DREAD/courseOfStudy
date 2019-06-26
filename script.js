@@ -159,6 +159,4 @@ function calc () {
 
 var checks = document.getElementsByName('checks' + i)
 
-module.exports = test()
-
 console.log(checks)

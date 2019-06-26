@@ -21,7 +21,8 @@
     "mocha": "^6.1.4",
     "mustache": "^3.0.1",
     "nodemon": "^1.19.1",
-    "require": "^2.4.20"
+    "require": "^2.4.20",
+    "sinon": "^7.3.2"
   },
   "devDependencies": {
     "eslint": "^5.16.0",
