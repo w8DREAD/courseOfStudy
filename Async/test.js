@@ -18,3 +18,12 @@ describe('EventEmmitter', () => {
   })
 })
 
+emitter.on('Hi', () => {
+  console.log('Hello')
+})
+emitter.on('How are you', () => {
+  console.log('Iam fine, thank you')
+})
+emitter.on('What are you doing', () => {
+  console.log('Iam learning javascript')
+})
