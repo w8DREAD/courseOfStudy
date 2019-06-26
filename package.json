@@ -6,7 +6,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha 'Async/test.js' ",
+    "test": "mocha 'async/test.js' ",
     "start": "nodemon server.js",
     "build": "mustache dataView.json myTemplate.mustache > public/output.html"
   },
