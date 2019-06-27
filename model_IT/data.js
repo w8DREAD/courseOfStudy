@@ -1,266 +1,246 @@
-// for generation
-let id = 0
-let num = 0
-
-class Director {
-  constructor (name, company) {
-    this.name = name
-    this.storageWaiting = {
-      web: [],
-      mobile: [],
-      QA: []
-    }
-    this.hiring = []
-    this.firing = []
-    this.company = company
-  }
-
-  clearProject () {
-    for (let group of Object.keys(this.company)) {
-      if (this.storageWaiting.hasOwnProperty(group)) {
-        let arrProcess = this.company[group].projectInProcess.slice()
-
-        arrProcess.forEach((curProj) => {
-          if (curProj.daysInWork >= curProj.difficulty) {
-            let workers = curProj.workers.slice()
-
-            workers.forEach((curWorker) => {
-              curWorker.completeProjects.push(curProj.name)
-              curWorker.withoutWorks = 0
-              this.company[group].workers.push(curWorker)
-            })
-
-            curProj.workers = []
-
-            if (group != 'QA') {
-              this.storageWaiting.QA.push(curProj)
-              curProj.daysInWork = 0
-            } else {
-              this.company.completeProjects.push(curProj)
-            }
-            remEl(curProj.name, this.company[group].projectInProcess, 'name')
-          }
-        })
-      }
-    }
-  }
-
-  checkProject () {
-    for (let group of Object.keys(this.company)) {
-      if (this.storageWaiting.hasOwnProperty(group)) {
-        this.company[group].projectInProcess.forEach((curProj) => {
-          if (group == 'QA') {
-            curProj.daysInWork = curProj.difficulty
-          } else if (group == 'mobile') {
-            curProj.daysInWork += curProj.workers.length
-          } else {
-            curProj.daysInWork += 1
-          }
-        })
-      }
-    }
-  }
-
-  hiringWorker () {
-    for (let group of Object.keys(this.company)) {
-      if (this.storageWaiting.hasOwnProperty(group)) {
-        if (this.storageWaiting[group].length > 0) {
-          while (this.storageWaiting[group].length > this.company[group].workers.length) {
-            let worker = new Worker(id, group)
-            this.company[group].workers.push(worker)
-            this.hiring.push(worker)
-          }
-        }
-      }
-    }
-  }
-
-  firingWorker () {
-    for (let group of Object.keys(this.company)) {
-      if (this.storageWaiting.hasOwnProperty(group)) {
-        let notWorks = []
-        let arrWorks = this.company[group].workers.slice()
-
-        arrWorks.forEach((curWorker) => {
-          if (curWorker.withoutWorks >= 3) {
-            notWorks.push(curWorker)
-          }
-        })
-
-        if (notWorks.length > 0) {
-          notWorks.sort((a, b) => {
-            if (a.completeProjects.length > b.completeProjects.length) {
-              return -1
-            }
-            if (a.completeProjects.length < b.completeProjects.length) {
-              return 1
-            }
-            return 0
-          })
-
-          this.firing.push(notWorks[0])
-          remEl(notWorks[0].name, this.company[group].workers, 'name')
-        }
-
-        this.company[group].workers.forEach((curWorker) => {
-          curWorker.withoutWorks += 1
-        })
-      }
-    }
-  }
-
-  getProject () {
-    let i = 0
-    let inDay = {
-      web: [],
-      mobile: []
-    }
-
-    while (i < random(0, 4)) {
-      let project = new Project()
-
-      if (project.type == 'web') {
-        inDay.web.unshift(project)
-      } else {
-        inDay.mobile.unshift(project)
-      }
-      i++
-    }
-    if (inDay.web[0]) {
-      inDay.forEach((cur) => {
-        this.storageWaiting.web.unshift(cur)
-      })
-      if (inDay.mobile[0]) {
-          inDay.forEach((cur) => {
-              this.storageWaiting.mobile.unshift(cur)
-          })
-      }
-    }
-  }
-
-  giveProject () {
-    for (let group of Object.keys(this.company)) {
-      if (this.storageWaiting.hasOwnProperty(group)) {
-        if (this.storageWaiting[group].length > 0) {
-          let arr = this.storageWaiting[group].slice()
-
-          arr.forEach((curProj) => {
-            if (this.company[group].workers.length > this.company[group].storageProject.length) {
-              this.company[group].storageProject.push(curProj)
-              remEl(curProj.name, this.storageWaiting[group], 'name')
-            }
-          })
-        }
-      }
-    }
-  }
-}
-
-class Company {
-    constructor (name, groups) {
-        this.name = name
-        this.completeProjects = []
-
-        let group = 1
-
-        while (group < arguments.length) {
-            this[arguments[group]] = new Groups(arguments[group])
-            group++
-        }
-    }
-
-  startedWork () {
-    for (let group of Object.keys(this)) {
-      if (group != 'name' && group != 'completeProjects') {
-        let arrProject = this[group].storageProject.slice()
-        let arrWorkers
-
-        arrProject.forEach((curProj) => {
-          arrWorkers = this[group].workers.slice()
-
-          if (arrWorkers.length > 0) {
-            curProj.workers.push(arrWorkers[0])
-            this[group].projectInProcess.push(curProj)
-            remEl(curProj.name, this[group].storageProject, 'name')
-            remEl(arrWorkers[0].name, this[group].workers, 'name')
-          }
-        })
-        if (group.name == 'mobile') {
-          if (this[group].workers.length && this[group].storageProject.length == 0) {
-            let arrProcess = this[group].projectInProcess
-
-            arrProcess.forEach((curProj) => {
-              if (this[group].workers.length) {
-                let workers = this[group].workers.slice()
-
-                workers.forEach((curWorker) => {
-                  if (curProj.workers.length < 3) {
-                    curProj.workers.push(curWorker)
-                    remEl(curWorker.name, this[group].workers, 'name')
-                  }
-                })
-              }
-
-              remEl(curProj.name, this[group].projectInProcess, 'name')
-              this[group].projectInProcess.push(curProj)
-            })
-          }
-        }
-      }
-    }
-  }
-}
-class Project {
-  constructor () {
-    this.name = 'Project N-' + num
-    this.type = ['web', 'mobile'][random()]
-    this.difficulty = random(1, 3)
-    this.workers = []
-    this.daysInWork = 0
-    num++
-  }
-}
-class Groups {
-  constructor (name) {
-    this.name = name
-    this.workers = []
-    this.projectInProcess = []
-    this.storageProject = []
-  }
-}
-
-class Worker {
-  constructor (name, skill) {
-    this.name = 'Worker_' + name
-    this.skill = skill
-    this.completeProjects = []
-    this.withoutWorks = 0
-    id++
-  }
-}
-
 function random (min = 0, max = 1) {
   return Math.round(Math.random() * (max - min) + min)
 }
 
-let qwe
+class Director {
+  constructor (name, company) {
+    this.name = name
+    this.projectNotGiven = []
+    this.hiring = []
+    this.company = company
+  }
 
-qwe = new Company("Evil's Corporation", 'web', 'mobile', 'QA')
+  getProjects () {
+    let i = 0
+    let rand = random(0, 4)
+    while (i < rand) {
+      let project = Project.createProject(random()) // spec: [0 = 'web', 1 = 'mobile']
+      this.projectNotGiven.push(project)
+      i++
+    }
+  }
 
-let evil = new Director('Evil', qwe)
+  giveProjects () {
+    this.projectNotGiven.forEach((project, index, storage) => {
+        this.company.takeProject(project)
+        storage.splice(index, 1)
+    })
+    let projectsForTest = this.company.QA.storageProjects.concat(this.company.web.forTest.concat(this.company.mobile.forTest))
+      this.company.QA.storageProjects = projectsForTest.slice()
+      this.company.web.forTest = []
+      this.company.mobile.forTest = []
+  }
 
-function test (n) {
-  let i = 0
+  hiringWorker () {
+      let i = 0
+      let needWeb = this.company.web.requireWorker()
+      let needMobile = this.company.mobile.requireWorker()
+      let needQA = this.company.QA.requireWorker()
+   while (i < needWeb) {
+          let worker = Worker.createWorker('web')
+          this.company.web.workers.push(worker)
+       this.hiring.push(worker)
+       i++
+   }
+   i = 0
+      while (i < needMobile) {
+          let worker = Worker.createWorker('mobile')
+          this.company.mobile.workers.push(worker)
+          this.hiring.push(worker)
+          i++
+      }
+      i = 0
+      while (i < needQA) {
+          let worker = Worker.createWorker('QA')
+          this.company.QA.workers.push(worker)
+          this.hiring.push(worker)
+          i++
+      }
+  }
+}
 
-  while (i < n) {
-    evil.getProject()
-    evil.giveProject()
-    evil.hiringWorker()
-    evil.company.startedWork()
-    evil.clearProject()
-    evil.checkProject()
-    evil.firingWorker()
-    i++
+class Company {
+  constructor(name = 'Corporation') {
+    this.name = name
+    this.web = Group.createGroup(Web)
+    this.mobile = Group.createGroup(Mobile)
+    this.QA = Group.createGroup(QA)
+  }
+
+  takeProject(project) {
+      this[project.spec].storageProjects.push(project)
+    }
+}
+class Group {
+  constructor (name) {
+    this.name = name
+    this.workers = []
+    this.firing = []
+    this.storageProjects = []
+  }
+
+  requireWorker () {
+      let projectsInWaiting = this.storageProjects.filter(project => project.status == 'in waiting' || project.status == 'for test')
+      return projectsInWaiting.length - this.workers.length
+  }
+
+  startWork () {
+      this.storageProjects.forEach( (project) => {
+        if(this.workers.length && project.status == 'in waiting') {
+          project.addWorker(this.workers[0])
+          this.workers.splice(0, 1)
+        }
+      })
+  }
+
+  checkWork () {
+    this.storageProjects.forEach( (project, index, storage) => {
+      if(project.daysInWork >= project.difficulty) {
+        project.workers.forEach( (worker) => {
+          worker.finishWork(project)
+          this.workers.push(worker)
+        })
+        project.status = 'for test'
+        project.workers = []
+        project.daysInWork = 0
+        this.forTest.push(project)
+        storage.splice(index, 1)
+      }
+    })
+    this.storageProjects.forEach( (project) => {
+      project.workDay()
+    })
+  }
+
+  firingWorkers () {
+    let notWorks = this.workers.filter((worker) => {
+      return worker.withoutWorks >= 3
+    })
+
+    if (notWorks.length > 0) {
+      notWorks.sort((a, b) => {
+        if (a.completeProjects.length < b.completeProjects.length) {
+          return -1
+        }
+        if (a.completeProjects.length > b.completeProjects.length) {
+          return 1
+        }
+        return 0
+      })
+
+      this.firing.push(notWorks[0])
+      remEl(notWorks[0].name, this.workers, 'name')
+    }
+
+    this.workers.forEach((worker) => {
+      worker.withoutWorks += 1
+    })
+  }
+  static createGroup (name) {
+  return new name()
+  }
+}
+
+class Web extends Group {
+  constructor (name = 'web') {
+    super(name)
+    this.forTest = []
+  }
+}
+
+class Mobile extends Group {
+  constructor (name = 'mobile') {
+    super(name)
+    this.forTest = []
+  }
+  helpWithProject () {
+
+    this.storageProjects.forEach( (project) => {
+      if (this.workers.length) {
+      if(project.workers.length < 3) {
+        project.addWorker(this.workers[0])
+        this.workers.splice(0, 1)
+      }
+      }
+    })
+  }
+}
+
+class QA extends Group {
+  constructor (name = 'QA') {
+    super(name)
+  }
+  startWork () {
+    this.storageProjects.forEach( (project) => {
+      if(this.workers.length && project.status == 'for test') {
+        project.addWorker(this.workers[0], 'testing')
+        this.workers.splice(0, 1)
+      }
+    })
+  }
+  checkWork () {
+    this.storageProjects.forEach( (project) => {
+      if(project.daysInWork >= project.difficulty) {
+        project.workers.forEach( (worker) => {
+          worker.finishWork(project)
+          this.workers.push(worker)
+        })
+        project.status = 'complete'
+        project.workers = []
+        project.daysInWork = 0
+      }
+    })
+    this.storageProjects.forEach( (project) => {
+      project.workDay()
+    })
+  }
+}
+
+class Worker {
+  static id = 0
+
+  constructor (skill) {
+    this.name = 'Worker_' + Worker.id
+    this.skill = skill
+    this.completeProjects = []
+    this.withoutWorks = 0
+    Worker.id++
+  }
+  finishWork (project) {
+    this.completeProjects.push(project.name)
+    this.withoutWorks = 0
+  }
+  static createWorker (skill) {
+    return new Worker(skill)
+  }
+}
+
+class Project {
+  static id = 0
+
+  constructor (spec) {
+    this.name = 'Project N-' + Project.id
+    this.spec = ['web', 'mobile'][spec]
+    this.difficulty = random(1, 3)
+    this.workers = []
+    this.daysInWork = 0
+    this.status = 'in waiting'  // ['in waiting', 'in work', 'for test',  'testing', 'complete']
+    Project.id++
+  }
+  static createProject (spec) {
+    return new Project(spec)
+  }
+  workDay () {
+    if (this.status == 'testing') {
+      this.daysInWork = this.difficulty
+    }
+    else if (this.workers.length) {
+      this.daysInWork += this.workers.length
+    }
+  }
+  addWorker (worker, status = 'in work') {
+    this.workers.push(worker)
+    this.status = status
   }
 }
 
@@ -276,6 +256,47 @@ function remEl (elem, arr, key) {
   }
 }
 
-test(25)
+let evil = new Director('Evil', new Company('Corporation'))
 
-module.exports = evil
+function test (n) {
+  let i = 0
+
+  while (i < n) {
+    evil.getProjects()
+    evil.hiringWorker()
+    evil.giveProjects()
+      evil.hiringWorker()
+      evil.company.web.startWork()
+      evil.company.mobile.startWork()
+      evil.company.QA.startWork()
+      evil.company.mobile.helpWithProject()
+      evil.company.web.checkWork()
+      evil.company.mobile.checkWork()
+      evil.company.QA.checkWork()
+      evil.company.web.firingWorkers()
+      evil.company.mobile.firingWorkers()
+      evil.company.QA.firingWorkers()
+    i++
+  }
+}
+
+test(40)
+
+console.log(evil)
+console.log(evil.company.QA.storageProjects.filter((cur) => {
+  return cur.status == 'complete'
+}).length)
+
+console.log(evil.hiring.length)
+console.log(evil.hiring)
+
+console.log(evil.hiring.filter(cur => cur.skill == 'mobile'))
+
+console.log(evil.company.web.firing.length + evil.company.mobile.firing.length + evil.company.QA.firing.length)
+
+console.log(`Web firing --- ${JSON.stringify(evil.company.web.firing)}`)
+console.log(`Mobile firing --- ${JSON.stringify(evil.company.mobile.firing)}`)
+console.log(`QA firing --- ${JSON.stringify(evil.company.QA.firing)}`)
+console.log(`Web workers --- ${JSON.stringify(evil.company.web.workers)}`)
+console.log(`Mobile workers --- ${JSON.stringify(evil.company.mobile.workers)}`)
+console.log(`QA workers --- ${JSON.stringify(evil.company.QA.workers)}`)
