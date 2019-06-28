@@ -1,11 +1,8 @@
-const   http = require('http'),
-        director = require('./model_IT/data');
+const http = require('http')
+const director = require('./model_IT/data')
 
-
-
-http.createServer(function(request, response){
-
-    response.end(`
+http.createServer(function (request, response) {
+  response.end(`
     Release projects -- ${JSON.stringify(director.company.completeProjects.length)}
     
     Hiring -- ${JSON.stringify(director.hiring.length)}
@@ -28,7 +25,5 @@ http.createServer(function(request, response){
     
     Process.QA.list -- ${JSON.stringify(director.company.QA.projectInProcess)}
     
-    Hiring.list -- ${JSON.stringify(director.hiring)}`);
-
-
-}).listen(3000);
+    Hiring.list -- ${JSON.stringify(director.hiring)}`)
+}).listen(3000)
