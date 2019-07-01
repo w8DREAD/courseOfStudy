@@ -10,8 +10,8 @@ var line
 
 // class Product {
 //   constructor (name, price) {
-//     this.name = name
-//     this.price = price
+//     this.name: string = name
+//     this.price: number = price
 //   }
 // }
 
@@ -22,12 +22,12 @@ var Product = function (name, price) {
 
 // class Producer {
 //   constructor (name, min = 50, max = 150) {
-//     this.name = name
-//     this.produced = []
-//     this.storage = []
-//     this.product = []
-//     this.minСapacity = min
-//     this.maxCapacity = max
+//     this.name: string = name
+//     this.produced: number[]
+//     this.storage: number[]
+//     this.product: number[]
+//     this.minСapacity: number = min
+//     this.maxCapacity: number = max
 //   }
 //
 //   generateProduct (name = randName, price = randPrice, n = 1) {
@@ -78,11 +78,11 @@ Producer.prototype.sumLast3days = function (n = undefined) {
 
 // class User {
 //   constructor (name, min = 70, max = 120) {
-//     this.name = name
-//     this.storage = []
-//     this.need = []
-//     this.minСapacity = min
-//     this.maxCapacity = max
+//     this.name: string = name
+//     this.storage: number[]
+//     this.need: number[]
+//     this.minСapacity: number = min
+//     this.maxCapacity: number = max
 //   }
 //   createNeeds () {
 //     return this.need.push(randomRange(this.minСapacity, this.maxCapacity))
@@ -103,13 +103,13 @@ User.prototype.createNeeds = function () {
 
 // class Agent {
 //   constructor (name, capacity = 100) {
-//     this.name = name
-//     this.capacity = capacity
-//     this.deliveryForUsers = []
+//     this.name: string = name
+//     this.capacity: number = capacity
+//     this.deliveryForUsers: number[]
 //   }
 //
-//   delivery (from, where, arr) {
-//     var temp = from.produced[arr]
+//   delivery (from, where, arr): void {
+//     let temp: number[] = from.produced[arr]
 //     if (from.storage.length != 0) {
 //       temp = from.produced[arr] + from.storage[arr - 1]
 //     }
