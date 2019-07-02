@@ -22,8 +22,8 @@ class Director {
 
   giveProjects () {
     this.projectNotGiven.forEach((project, index, storage) => {
-        this.company.takeProject(project)
-        storage.splice(index, 1)
+      this.company.takeProject(project)
+      storage.splice(index, 1)
     })
     let projectsForTest = this.company.QA.storageProjects.concat(this.company.web.forTest.concat(this.company.mobile.forTest))
       this.company.QA.storageProjects = projectsForTest.slice()
@@ -36,10 +36,10 @@ class Director {
       let needWeb = this.company.web.requireWorker()
       let needMobile = this.company.mobile.requireWorker()
       let needQA = this.company.QA.requireWorker()
-   while (i < needWeb) {
-          let worker = Worker.createWorker('web')
-          this.company.web.workers.push(worker)
-       this.hiring.push(worker)
+    while (i < needWeb) {
+        let worker = Worker.createWorker('web')
+      this.company.web.workers.push(worker)
+      this.hiring.push(worker)
        i++
    }
    i = 0
@@ -136,8 +136,9 @@ class Group {
       worker.withoutWorks += 1
     })
   }
+
   static createGroup (name) {
-  return new name()
+    return new name()
   }
 }
 
