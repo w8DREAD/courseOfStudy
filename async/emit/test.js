@@ -1,14 +1,18 @@
-const chai = require('chai')
+const assert = require('assert')
 const sinon = require('sinon')
-const method = require('./index')
+const event = require('./index')
 const EventEmitter = require('events')
 const emitter = new EventEmitter()
 
 const spy = sinon.spy()
 
+emitter.on('Hi', () => {
+  spy(console.log('Hello'))
+})
+
 describe('EventEmmitter', () => {
   it('Вызывает ли событие', () => {
-    method('What are you doing')
-    chai.assert(spy.called)
+    event.hi.answer()
+    assert(spy.called)
   })
 })
