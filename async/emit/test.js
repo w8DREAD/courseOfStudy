@@ -7,12 +7,12 @@ const emitter = new EventEmitter()
 const spy = sinon.spy()
 
 emitter.on('Hi', () => {
-  spy(console.log('Hello'))
+  console.log('Hello')
 })
 
 describe('EventEmmitter', () => {
   it('Вызывает ли событие', () => {
-    event.hi.answer()
-    assert(spy.called)
+    spy(emitter.emit('hi'))
+    assert(spy.returned('Hello'))
   })
 })

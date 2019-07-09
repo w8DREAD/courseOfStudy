@@ -39,7 +39,7 @@ how.on(this.eventName, () => {
 
 const what = new Greeting('What are you doing')
 what.on(this.eventName, () => {
-  spy(console.log('Iam learning javascript'))
+  console.log('Iam learning javascript')
 })
 
 module.exports = { method: method, hi: hi, how: how, what: what }
