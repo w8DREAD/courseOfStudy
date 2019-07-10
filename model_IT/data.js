@@ -1,3 +1,5 @@
+const _ = require('lodash')
+
 function random (min = 0, max = 1) {
   return Math.round(Math.random() * (max - min) + min)
 }
@@ -14,16 +16,17 @@ class Director {
     let i = 0
     let rand = random(0, 4)
     while (i < rand) {
-      let project = Project.createProject(random()) // spec: [0 = 'web', 1 = 'mobile']
+      let project = Project.createProject(random()) // number: 0 = 'web', 1 = 'mobile'
       this.projectNotGiven.push(project)
       i++
     }
   }
 
   giveProjects () {
-    this.projectNotGiven.forEach((project, index, storage) => {
+    let projectsNotGiven = this.projectNotGiven.slice()
+    projectsNotGiven.forEach((project, index) => {
       this.company.takeProject(project)
-      storage.splice(index, 1)
+      this.projectNotGiven.splice(index, 1)
     })
     let projectsForTest = this.company.QA.storageProjects.concat(this.company.web.forTest.concat(this.company.mobile.forTest))
       this.company.QA.storageProjects = projectsForTest.slice()
@@ -62,41 +65,47 @@ class Director {
 class Company {
   constructor(name = 'Corporation') {
     this.name = name
-    this.web = Group.createGroup(Web)
-    this.mobile = Group.createGroup(Mobile)
-    this.QA = Group.createGroup(QA)
+    this.web = Group.createGroup('web')
+    this.mobile = Group.createGroup('mobile')
+    this.QA = Group.createGroup('QA')
   }
 
   takeProject(project) {
-      this[project.spec].storageProjects.push(project)
+    if(project instanceof WebProject) {
+      this.web.storageProjects.push(project)
     }
+    if(project instanceof MobileProject) {
+      this.mobile.storageProjects.push(project)
+    }
+  }
 }
 class Group {
-  constructor (name) {
+  constructor(name) {
     this.name = name
     this.workers = []
     this.firing = []
     this.storageProjects = []
   }
 
-  requireWorker () {
-      let projectsInWaiting = this.storageProjects.filter(project => project.status == 'in waiting' || project.status == 'for test')
-      return projectsInWaiting.length - this.workers.length
+  requireWorker() {
+    let projectsInWaiting = this.storageProjects.filter(project => project.status == 'in waiting' || project.status == 'for test')
+    return projectsInWaiting.length - this.workers.length
   }
 
-  startWork () {
-      this.storageProjects.forEach( (project) => {
-        if(this.workers.length && project.status == 'in waiting') {
-          project.addWorker(this.workers[0])
-          this.workers.splice(0, 1)
-        }
-      })
+  startWork() {
+    this.storageProjects.forEach((project) => {
+      if (this.workers.length && project.status == 'in waiting') {
+        project.addWorker(this.workers[0])
+        this.workers.splice(0, 1)
+      }
+    })
   }
 
-  checkWork () {
-    this.storageProjects.forEach( (project, index, storage) => {
-      if(project.daysInWork >= project.difficulty) {
-        project.workers.forEach( (worker) => {
+  checkWork() {
+    let storageProjects = this.storageProjects.slice()
+    storageProjects.forEach((project, index) => {
+      if (project.daysInWork >= project.difficulty) {
+        project.workers.forEach((worker) => {
           worker.finishWork(project)
           this.workers.push(worker)
         })
@@ -104,15 +113,15 @@ class Group {
         project.workers = []
         project.daysInWork = 0
         this.forTest.push(project)
-        storage.splice(index, 1)
+        this.storageProjects.splice(index, 1)
       }
     })
-    this.storageProjects.forEach( (project) => {
+    this.storageProjects.forEach((project) => {
       project.workDay()
     })
   }
 
-  firingWorkers () {
+  firingWorkers() {
     let notWorks = this.workers.filter((worker) => {
       return worker.withoutWorks >= 3
     })
@@ -129,29 +138,35 @@ class Group {
       })
 
       this.firing.push(notWorks[0])
-      remEl(notWorks[0].name, this.workers, 'name')
+      _.pullAllBy(this.workers, [{name: notWorks[0].name}], 'name')
     }
-
     this.workers.forEach((worker) => {
       worker.withoutWorks += 1
     })
   }
 
-  static createGroup (name) {
-    return new name()
+  static createGroup(group) { //web, mobile, QA
+    if (group == 'web') {
+      return new Web()
+    }
+    if (group == 'mobile') {
+      return new Mobile()
+    }
+    if (group == 'QA') {
+      return new QA()
+    }
   }
 }
-
 class Web extends Group {
-  constructor (name = 'web') {
-    super(name)
+  constructor () {
+    super('web')
     this.forTest = []
   }
 }
 
 class Mobile extends Group {
-  constructor (name = 'mobile') {
-    super(name)
+  constructor () {
+    super('mobile')
     this.forTest = []
   }
   helpWithProject () {
@@ -168,8 +183,8 @@ class Mobile extends Group {
 }
 
 class QA extends Group {
-  constructor (name = 'QA') {
-    super(name)
+  constructor () {
+    super('QA')
   }
   startWork () {
     this.storageProjects.forEach( (project) => {
@@ -196,40 +211,67 @@ class QA extends Group {
     })
   }
 }
-
+let workerId = 0
 class Worker {
-  static id = 0
 
-  constructor (skill) {
-    this.name = 'Worker_' + Worker.id
-    this.skill = skill
+  constructor (nameWorker) {
+    this.name = nameWorker
     this.completeProjects = []
     this.withoutWorks = 0
-    Worker.id++
+    workerId++
   }
   finishWork (project) {
     this.completeProjects.push(project.name)
     this.withoutWorks = 0
   }
-  static createWorker (skill) {
-    return new Worker(skill)
+  static createWorker (specialization) {
+    if (specialization == 'web') {
+      return new WebWorker()
+    }
+    if (specialization == 'mobile') {
+      return new MobileWorker()
+    }
+    if (specialization == 'QA') {
+      return new QAWorker()
+    }
   }
 }
 
-class Project {
-  static id = 0
+class WebWorker extends Worker {
+  constructor () {
+    super('WebWorker_' + workerId)
+  }
+}
 
-  constructor (spec) {
-    this.name = 'Project N-' + Project.id
-    this.spec = ['web', 'mobile'][spec]
+class MobileWorker extends Worker {
+  constructor () {
+    super('MobileWorker_' + workerId)
+  }
+}
+
+class QAWorker extends Worker {
+  constructor () {
+    super('QAWorker_' + workerId)
+  }
+}
+
+let projectId = 0
+class Project {
+  constructor (nameProject) {
+    this.name = nameProject
     this.difficulty = random(1, 3)
     this.workers = []
     this.daysInWork = 0
     this.status = 'in waiting'  // ['in waiting', 'in work', 'for test',  'testing', 'complete']
-    Project.id++
+    projectId++
   }
-  static createProject (spec) {
-    return new Project(spec)
+  static createProject (number) {
+    if (number == 0) {
+      return new WebProject()
+    }
+    if (number == 1) {
+      return  new MobileProject()
+    }
   }
   workDay () {
     if (this.status == 'testing') {
@@ -245,15 +287,15 @@ class Project {
   }
 }
 
-function remEl (elem, arr, key) {
-  let i = 0
+class WebProject extends Project{
+  constructor () {
+    super('Project WEB-' + projectId)
+  }
+}
 
-  while (i < arr.length) {
-    if (arr[i][key] == elem) {
-      arr.splice(i, 1)
-      return arr
-    }
-    i++
+class MobileProject extends Project{
+  constructor () {
+    super('Project MOBILE-' + projectId)
   }
 }
 
@@ -266,7 +308,6 @@ function test (n) {
     evil.getProjects()
     evil.hiringWorker()
     evil.giveProjects()
-      evil.hiringWorker()
       evil.company.web.startWork()
       evil.company.mobile.startWork()
       evil.company.QA.startWork()
@@ -281,23 +322,24 @@ function test (n) {
   }
 }
 
-test(40)
+test(200)
 
-console.log(evil)
 console.log(evil.company.QA.storageProjects.filter((cur) => {
   return cur.status == 'complete'
 }).length)
 
 console.log(evil.hiring.length)
-console.log(evil.hiring)
-
-console.log(evil.hiring.filter(cur => cur.skill == 'mobile'))
+//
+// console.log(evil.hiring.filter(cur => cur.skill == 'mobile'))
 
 console.log(evil.company.web.firing.length + evil.company.mobile.firing.length + evil.company.QA.firing.length)
 
-console.log(`Web firing --- ${JSON.stringify(evil.company.web.firing)}`)
-console.log(`Mobile firing --- ${JSON.stringify(evil.company.mobile.firing)}`)
-console.log(`QA firing --- ${JSON.stringify(evil.company.QA.firing)}`)
-console.log(`Web workers --- ${JSON.stringify(evil.company.web.workers)}`)
-console.log(`Mobile workers --- ${JSON.stringify(evil.company.mobile.workers)}`)
-console.log(`QA workers --- ${JSON.stringify(evil.company.QA.workers)}`)
+// console.log(`Web firing --- ${JSON.stringify(evil.company.web.firing)}`)
+// console.log(`Mobile firing --- ${JSON.stringify(evil.company.mobile.firing)}`)
+// console.log(`QA firing --- ${JSON.stringify(evil.company.QA.firing)}`)
+// console.log(`Web workers --- ${JSON.stringify(evil.company.web.workers)}`)
+// console.log(`Mobile workers --- ${JSON.stringify(evil.company.mobile.workers)}`)
+// console.log(`QA workers --- ${JSON.stringify(evil.company.QA.workers)}`)
+// console.log(`Web workers --- ${JSON.stringify(evil.company.web.workers.length)}`)
+// console.log(`Mobile workers --- ${JSON.stringify(evil.company.mobile.workers.length)}`)
+// console.log(`QA workers --- ${JSON.stringify(evil.company.QA.workers.length)}`)
