@@ -18,7 +18,7 @@ async function nodeTail (readFile, writeFile) {
     })
   })
   return rstream.on('end', () => {
-    console.log('Close file')
+    return console.log('Close file')
   })
 }
 nodeTail('./read.txt', './write.txt')
