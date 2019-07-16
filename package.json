@@ -6,7 +6,7 @@
     "test": "test"
   },
   "scripts": {
-    "test": "mocha 'async/test.js' ",
+    "test": "mocha 'async/emit/test.js' ",
     "start": "nodemon server.js",
     "build": "mustache dataView.json myTemplate.mustache > public/output.html"
   },
@@ -25,7 +25,12 @@
     "sinon": "^7.3.2"
   },
   "devDependencies": {
-    "eslint": "^5.16.0",
+    "eslint": "^6.0.1",
+    "eslint-config-standard": "^12.0.0",
+    "eslint-plugin-import": "^2.18.0",
+    "eslint-plugin-node": "^9.1.0",
+    "eslint-plugin-promise": "^4.2.1",
+    "eslint-plugin-standard": "^4.0.0",
     "standard": "^12.0.1"
   },
   "keywords": [],
