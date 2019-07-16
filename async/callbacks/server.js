@@ -10,46 +10,33 @@ app.set('view engine', 'html')
 
 // Callback
 
-function createhtml (dataPath, templatePath, outputPath, callback) {
-  let template
-  let json
-  fs.readFile(dataPath, 'utf8', (err, data) => {
+function createhtml (dataPath, templatePath, outputPath) {
+  return fs.readFile(dataPath, 'utf8', (err, json) => {
     if (err) {
-      return console.log('File .json not found')
+      return console.log(err.message)
     }
-    json = JSON.parse(data)
-
-    fs.readFile(templatePath, 'utf8', (err, data) => {
+    return fs.readFile(templatePath, 'utf8', (err, temp) => {
       if (err) {
-        return console.log('File template not found')
+        return console.log(err.message)
       }
-      template = data
-
-      callback(json, template, outputPath)
+      let result = mustache.render(temp, json)
+      return fs.writeFile(outputPath, result, (err) => {
+        if (err) {
+          return console.log(err.message)
+        }
+        return console.log('The file was saved!')
+      })
     })
   })
 }
-
-function callback (data, temp, outputPath) {
-  let result = mustache.render(temp, data)
-  if (!result) {
-    return console.log('File not rendering')
-  }
-  fs.writeFile(outputPath, result, (err) => {
-    if (err) {
-      return console.log(err)
-    }
-    console.log('The file was saved!')
-  })
-}
-createhtml('data.json', 'views/template.html', 'build.html', callback)
+createhtml('data.json', 'views/template.html', 'build.html')
 
 // Promise
 
 let jsonData = new Promise((resolve, reject) => {
   fs.readFile('data.json', 'utf8', (err, data) => {
     if (err) {
-      reject('File .json not found')
+      reject(err)
     } else {
       resolve(JSON.parse(data))
     }
@@ -59,7 +46,7 @@ let jsonData = new Promise((resolve, reject) => {
 let template = new Promise((resolve, reject) => {
   fs.readFile('views/template.html', 'utf8', (err, data) => {
     if (err) {
-      reject('File template not found')
+      reject(err)
     } else {
       resolve(data)
     }
@@ -67,25 +54,41 @@ let template = new Promise((resolve, reject) => {
 })
 Promise.all([jsonData, template])
   .then(([jsonData, template]) => {
-    fs.writeFile('build.html', mustache.render(template, jsonData), (err) => {
+    return fs.writeFile('build.html', mustache.render(template, jsonData), (err) => {
       if (err) {
         return console.log(err)
       }
-      console.log('The file was saved!')
+      return console.log('The file was saved!')
     })
   })
   .catch(err => {
-    console.log(err)
+    return console.log(err.message)
   })
 
 // async/await
 
 async function getJson () {
-  return fs.readFileSync('data.json', 'utf8')
+  return new Promise((resolve, reject) => {
+    fs.readFile('data.json', 'utf8', (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
 }
 
 async function getTemp () {
-  return fs.readFileSync('views/template.html', 'utf8')
+  return new Promise((resolve, reject) => {
+    fs.readFile('views/template.html', 'utf8', (err, data) => {
+      if (err) {
+        reject(err)
+      } else {
+        resolve(data)
+      }
+    })
+  })
 }
 
 async function main () {
@@ -93,14 +96,14 @@ async function main () {
     let temp = await getTemp()
     let json = await getJson()
     let result = mustache.render(temp, json)
-    fs.writeFile('build.html', result, (err) => {
+    return fs.writeFile('build.html', result, (err) => {
       if (err) {
         return console.log(err)
       }
-      console.log('The file was saved!')
+      return console.log('The file was saved!')
     })
   } catch (e) {
-    console.log(`File ${e} not found`)
+    return console.log(`File ${e} not found`)
   }
 }
 
