@@ -92,4 +92,4 @@
 // var checks = document.getElementsByName('checks' + i)
 //
 // console.log(checks)
-
+//
